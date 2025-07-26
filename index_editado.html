@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Deluxe Motorsport</title>
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f5f5f5;
+    color: #000;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  header {
+      text-align: center;
+      padding: 20px;
+      background-color: #0078D4; 
+      color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-bottom: 3px solid #F00;
+  }
+
+   header h1 {
+      font-size: 2.5em;
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #fff;
+  }
+
+  .container {
+    display: flex;
+    padding: 0 20px 20px;
+  }
+
+  .sidebar {
+    width: 250px;
+    height: 500px;
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 2px solid #0078D4;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    overflow: auto;
+    margin-top: -60px;
+  }
+
+  .filters-table label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #0078D4;
+  }
+
+  .filters-table select, .filters-table input[type="checkbox"] {
+    width: 100%;
+    padding: 6px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  .main-content {
+    flex-grow: 1;
+    margin-left: 20px;
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-left: 100px;
+  }
+
+  #pesquisa {
+      width: 50%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 2px solid #0078D4; 
+      outline-color: #F00; 
+	    margin-left: -15%;
+  }
+
+  .carros {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .carro {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.2s;
+      border: 2px solid #0078D4;
+  }
+
+  .carro:hover {
+      transform: scale(1.03);
+      border-color: #F00;
+  }
+
+  .carro img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+
+  .carro h2 {
+      margin: 10px 0 5px;
+      font-size: 1.2em;
+      color: #0078D4;
+  }
+
+  .carro p {
+    margin: 5px 0;
+    color: #555;
+  }
+
+  .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      background-color: #F00; 
+      color: white;
+      border-radius: 12px;
+      font-weight: bold;
+      margin-top: 10px;
+  }
+
+  .badge-unlimited {
+      display: inline-block;
+      padding: 4px 8px;
+      background-color: gray;
+      color: white;
+      border-radius: 12px;
+      font-weight: bold;
+      margin-top: 10px;
+  }
+
+  .theme-toggle {
+      top: 20px;
+      right: 20px;
+      padding: 10px;
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 5px;
+      z-index: 0;
+      position: fixed;
+  }
+
+  body.dark-mode {
+      background-color: #121212;
+      color: white;
+  }
+
+  body.dark-mode .carro {
+      background-color: #1e1e1e;
+      border: 2px solid #0078D4;
+  }
+
+  body.dark-mode .sidebar {
+      background-color: #1e1e1e;
+      border: 2px solid #0078D4;
+  }
+
+  body.dark-mode .carro h2 {
+      color: #0078D4;
+  }
+
+ body.dark-mode .carro p {
+      color: white;
+  }
+
+  body.dark-mode .badge-unlimited {
+    background-color: #888;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1> Premium Deluxe Motorsport </h1>
+  </header>
+
+  <button class="theme-toggle" onclick="toggleTheme()">Mudar Tema</button>
+
+  <div class="search-container">
+    <input type="text" id="pesquisa" placeholder="Procurar por marca ou modelo" oninput="filtrarCarros()">
+  </div>
+
+  <div class="container">
+    <aside class="sidebar">
+      <form class="filters-table">
+        <label for="ordem">Ordenar:</label>
+<select id="ordem" onchange="filtrarCarros()">
+  <option value="preco-asc">Preço: Mais barato primeiro</option>
+  <option value="preco-desc">Preço: Mais caro primeiro</option>
+  <option value="marca-asc">Marca: A → Z</option>
+  <option value="marca-desc">Marca: Z → A</option>
+  <option value="nome-asc">Modelo: A → Z</option>
+  <option value="nome-desc">Modelo: Z → A</option>
+  <option value="vs-asc">Velocidade stock: A → Z</option>
+  <option value="vs-desc">Velocidade stock: Z → A</option>
+  <option value="vft-asc">Velocidade FullTune: A → Z</option>
+  <option value="vft-desc">Velocidade FullTune: Z → A</option>
+  <option value="kg-asc">Tamanho Bagageira: A → Z</option>
+  <option value="kg-desc">Tamanho Bagageira: Z → A</option>
+  
+</select>
+
+        <label for="categoria">Categoria:</label>
+        <select id="categoria" onchange="filtrarCarros()">
+          <option value="todas">Todas</option>
+	<option value="bikes">Bikes</option>
+	<option value="buggys">Buggys</option>
+          <option value="camioes">Camiões</option>
+          <option value="carrinhas">Carrinhas</option>
+	<option value="class">Class</option>
+          <option value="classicos">Clássicos</option>
+          <option value="comuns">Comuns</option>
+          <option value="desportivos">Desportivos</option>
+	<option value="eletricos">Eletricos</option>
+	<option value="presidenciais">Presidenciais</option>
+          <option value="motas">Motas</option>
+          <option value="outros">Outros</option>
+	<option value="offroads">Offroads</option>
+          <option value="suv">SUV</option>
+          <option value="supercarros">Supercarros</option>
+        </select>
+
+        <label for="preco">Faixa de preço:</label>
+        <select id="preco" onchange="filtrarCarros()">
+          <option value="todas">Todos os valores</option>
+          <option value="0-50000">$0 - $50K</option>
+          <option value="50000-200000">$50K - $200K</option>
+          <option value="200000-500000">$200K - $500K</option>
+          <option value="500000-1000000">$500K - $1M</option>
+          <option value="1000000-3000000">$1M - $3M</option>
+          <option value="3000000-20000000">$3M - $20M</option>
+        </select>
+
+        <label for="stock">Stock:</label>
+        <select id="stock" onchange="filtrarCarros()">
+          <option value="todos">Todos</option>
+          <option value="emStock">Apenas em stock</option>
+          <option value="semStock">Apenas sem stock</option>
+        </select>
+
+        <label for="unlimited">Tipo:</label>
+        <select id="unlimited" onchange="filtrarCarros()">
+          <option value="todos">Todos</option>
+          <option value="unlimited">Apenas Unlimited</option>
+          <option value="normal">Apenas Não Unlimited</option>
+        </select>
+      </form>
+    </aside>
+
+    <main class="main-content">
+      <div class="carros" id="lista-carros">
+        
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const carros = [
+ { marca: "Special", nome: "Panto", "preco": 4000, "imagem": "https://static.wikia.nocookie.net/gtawiki/images/a/ad/Panto-GTAV-front.png", "categoria": "comuns", "tipo": "unlimited", "vd": 0, "vf": 0, "kg": 0 },
+
+  { marca: "New", nome: "Wasted Money", "preco": 416000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Panto-GTAV-front.webp", "categoria": "offroads", "vd": 0, "vf": 0, "kg": 0 },
+
+  { marca: "Brand", nome: "Tyrant", "preco": 770000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Tyrant-GTAO-front.webp", "categoria": "desportivos", "vd": 0, "vf": 0, "kg": 0 },
+
+  { marca: "Albany", nome: "Alpha", "preco": 83000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Alpha-GTAV-front.webp", "categoria": "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Brigham", "preco": 12300, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Brigham-GTAOe-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Buccaneer", "preco": 23850, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Buccaneer-GTAV-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Buccaneer Rider", "preco": 25400, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/BuccaneerCustom-GTAO-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Cavalcade 2", "preco": 18000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Cavalcade2-GTAVe-front.webp", "categoria": "suv", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Cavalcade XL", "preco": 41500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/CavalcadeXL-GTAOe-front.webp", "categoria": "suv", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Emperor", "preco": 4500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Emperor-GTAV-front.webp", "categoria": "classicos", "tipo": "unlimited", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Emperor TR1", "preco": 250000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/ETR1-GTAO-front.webp", "categoria": "desportivos", "vd": 180, "vf": 190, "kg": 60 },
+  { marca: "Albany", nome: "Esperanto", "preco": 26000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Esperanto-GTAIV-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Franken Stange", "preco": 79000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Fr3FnkenStange-GTAV-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Hermes", "preco": 150000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Hermes-GTAO-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Lurcher", "preco": 30000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Lurcher-GTAV-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Manana", "preco": 7200, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Manana-GTAV-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Manana Custom", "preco": 17100, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/MananaCustom-GTAO-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Primo Custom", "preco": 21400, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/PrimoCustom-GTAO-front.webp", "categoria": "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Roosevelt", "preco": 24500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Roosevelt-GTAV-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Roosevelt Valor", "preco": 25200, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/RooseveltValor-GTAO-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "V-STR", "preco": 243500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/VSTR-GTAO-front.webp", "categoria": "desportivos", "vd": 195, "vf": 215, "kg": 60 },
+  { marca: "Albany", nome: "Virgo", "preco": 9000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Virgo-GTAV-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Virgo Classico", "preco": 11000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/VirgoClassic-GTAO-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Virgo Classico Custom", "preco": 17500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/VirgoClassicCustom-GTAO-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Washington", "preco": 22500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Washington-GTAV-front.webp", "categoria": "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Albany", nome: "Washington LE", "preco": 34500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Washington-GTAV-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+
+{ marca: "Annis", nome: "300R", preco: 205000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/300R-GTAOe-front.webp", categoria: "desportivos", "vd": 230, "vf": 245, "kg": 60 },
+  { marca: "Annis", nome: "Bifta", preco: 15000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Bifta-GTAV-front.webp", categoria: "buggys", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "Brawler", preco: 22000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/6c/Brawler-GTAV-front.png", categoria: "buggys", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "Dubsta 6x6", preco: 72000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Dubsta6x6-GTAV-front.webp", categoria: "offroads", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "Dune Buggy", preco: 20000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/DuneBuggy-GTAV-front.webp", categoria: "buggys", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "Elegy Import", preco: 250000, imagem: "https://img.gta5-mods.com/q95/images/annis-elegy-rh-5-pack-add-on-tuning-liveries-wheels/7c209f-unknown%20(2).jpg", categoria: "desportivos", "vd": 170, "vf": 185, "kg": 60 },
+  { marca: "Annis", nome: "Elegy R", preco: 300000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_222546897.png", categoria: "desportivos", tipo: "unlimited", "vd": 245, "vf": 265, "kg": 60 },
+  { marca: "Annis", nome: "Elegy RH6", preco: 300000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image_2025-04-24_121601867.png", categoria: "desportivos", "vd": 210, "vf": 230, "kg": 60 },
+  { marca: "Annis", nome: "Elegy RH8", preco: 1065000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/ElegyRH8-GTAV-front.webp", categoria: "supercarros", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "Elegy RH8-X", preco: 245000, imagem: "https://img.gta5-mods.com/q95/images/annis-elegy-rh8-x-add-on-sounds/8d18b1-elegyx_1080.png", categoria: "desportivos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "Elegy Retro Custom", preco: 230000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/ElegyRetroCustom-GTAO-front.webp", categoria: "desportivos", "vd": 205, "vf": 220, "kg": 60 },
+  { marca: "Annis", nome: "Euros", preco: 131500, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Euros-GTAO-front.webp", categoria: "desportivos", "vd": 175, "vf": 200, "kg": 60 },
+  { marca: "Annis", nome: "Freecrawler", preco: 40000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/a4/Freecrawler-GTAO-front.png", categoria: "offroads", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "Hellion", preco: 40000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Hellion-GTAO-front.webp", categoria: "suv" },
+  { marca: "Annis", nome: "Kawaii", preco: 60000, imagem: "https://img.gta5-mods.com/q95/images/annis-kawaii-addon-replace-tuning/c226b2-stock1.jpg", categoria: "classicos", tipo: "unlimited", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "Majima GT", preco: 315000, imagem: "https://img.gta5-mods.com/q95/images/annis-majima-gt-add-on/433893-1-min.png", categoria: "desportivos", "vd": 205, "vf": 230, "kg": 60 },
+  { marca: "Annis", nome: "RE-7B", preco: 350000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/RE7B-GTAO-front.webp", categoria: "desportivos", "vd": 200, "vf": 225, "kg": 60 },
+  { marca: "Annis", nome: "Rebel", preco: 11000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/58/Rebel-GTAVe-FrontQuarter.png", categoria: "offroads", tipo: "unlimited", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "Remus", preco: 101500, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Remus-GTAO-front.webp", categoria: "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "S-230", preco: 150000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image_2025-04-24_122138598.png", categoria: "desportivos", "vd": 195, "vf": 215, "kg": 60 },
+  { marca: "Annis", nome: "S80RR", preco: 750000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/S80RR-GTAO-front.webp", categoria: "desportivos", "vd": 195, "vf": 200, "kg": 60 },
+  { marca: "Annis", nome: "Trophy Truck", preco: 55000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/TrophyTruck-GTAO-front.webp", categoria: "offroads", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "Trophy Truck Limited", preco: 65000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/TrophyTruck-GTAO-front.webp", categoria: "offroads", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Annis", nome: "ZR350", preco: 210000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/ZR350-GTAO-front.webp", categoria: "desportivos", "vd": 175, "vf": 190, "kg": 60 },
+  { marca: "Annis", nome: "ZR390", preco: 250000, imagem: "https://img.gta5-mods.com/q95/images/annis-zr390/f12c3a-GTA5_LofdMYsEjt.jpg", categoria: "desportivos", "vd": 230, "vf": 250, "kg": 60 },
+
+  { marca: "BF", nome: "BF Club", preco: 20300, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Club-GTAO-front.webp", categoria: "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "BF", nome: "BF Raptor", preco: 55000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Raptor-GTAO-front.webp", categoria: "buggys", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "BF", nome: "Club GTR", preco: 25300, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_224624239.png", categoria: "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "BF", nome: "Dune Kart Buggy", preco: 25000, imagem: "https://img.gta5-mods.com/q85-w800/images/dune-kart-buggy-add-on-fivem/e3bc03-db1.jpg", categoria: "buggys", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "BF", nome: "Injection", preco: 7500, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Injection-GTAV-front.webp", categoria: "offroads", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "BF", nome: "Surfer", preco: 6500, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Surfer-GTAV-front.webp", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+  { marca: "BF", nome: "Surfer CCC", preco: 12500, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_224652157.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+  { marca: "BF", nome: "Weevil", preco: 20000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Weevil-GTAO-front.webp", categoria: "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "BF", nome: "Weevil Custom", preco: 45000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_224659721.png", categoria: "classicos", "vd": 0, "vf": 0, "kg": 0 },
+
+ { marca: "Benefactor", nome: "6C ALT", preco: 580000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_225017386.png", categoria: "desportivos", tipo: "unlimited", "vd": 215, "vf": 230, "kg": 60 },
+  { marca: "Benefactor", nome: "Admiral Classic", preco: 30000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/ADMIRAL.webp", categoria: "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Dubsta", preco: 40000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Dubsta-GTAVe-FrontQuarter.webp", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Dubsta Luxuary", preco: 57000, imagem: "https://img.gta5-mods.com/q95/images/benefactor-dubsta-add-on-tuning-lods/b1a700-dubsta221691.jpg", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Feltzer", preco: 460100, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_225042966.png", categoria: "desportivos", stock: "out of stock", "vd": 240, "vf": 260, "kg": 60 },
+  { marca: "Benefactor", nome: "Glendale", preco: 18000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Glendale-GTAV-front.webp", categoria: "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Glendale Custom", preco: 25000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/GlendaleCustom-GTAO-front.webp", categoria: "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Krieger", preco: 800000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Krieger-GTAO-front.webp", categoria: "desportivos", "vd": 265, "vf": 285, "kg": 0 },
+  { marca: "Benefactor", nome: "Panto", preco: 4000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Panto-GTAV-front.webp", categoria: "comuns", tipo: "unlimited", "vd": 0, "vf": 0, "kg": 60 },
+  { marca: "Benefactor", nome: "Schafter", preco: 33500, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/SchafterLWB-GTAO-front.webp", categoria: "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Schafter V12", preco: 95000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/SchafterV12-GTAO-front.webp", categoria: "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Schlagen GT", preco: 270000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/SchlagenGT-GTAO-front.webp", categoria: "desportivos", "vd": 250, "vf": 270, "kg": 60 },
+  { marca: "Benefactor", nome: "Schlagen GT 36WB", preco: 975000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_225130675.png", categoria: "desportivos", tipo: "unlimited", "vd": 240, "vf": 260, "kg": 60 },
+  { marca: "Benefactor", nome: "Schwartzer", preco: 79500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/44/Schwartzer-GTAVe-front.png", categoria: "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Serrano", preco: 12750, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Serrano-GTAV-front.webp", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Stirling GT", preco: 34000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/StirlingGT-GTAVe-front.webp", categoria: "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Streiter", preco: 40000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Streiter-GTAO-front.webp", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Stretch E", preco: 58500, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/StretchE-TBoGT-front.webp", categoria: "presidenciais", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Stretch XL", preco: 56000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Stretch-GTAV-front.webp", categoria: "presidenciais", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Benefactor", nome: "Surano", preco: 173500, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/SuranoDown-GTAV-front.webp", categoria: "desportivos", "vd": 185, "vf": 200, "kg": 60 },
+  { marca: "Benefactor", nome: "Surano X", preco: 168000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/SuranoDown-GTAV-front.webp", categoria: "desportivos", "vd": 185, "vf": 200, "kg": 60 },
+  { marca: "Benefactor", nome: "XLS", preco: 42000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/XLS-GTAO-front.webp", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+
+  { marca: "Blista", nome: "Kanjo", preco: 32500, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/BlistaKanjo-GTAO-front.webp", categoria: "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Blista", nome: "Kanjo SJ", preco: 35000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/KanjoSJ-GTAOe-front.webp", categoria: "comuns", "vd": 0, "vf": 0, "kg": 0 },
+
+  { marca: "Bollokan", nome: "Prairie", preco: 9500, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Prairie-GTAV-front.webp", categoria: "comuns", "vd": 0, "vf": 0, "kg": 0 },
+
+  { marca: "Bravado", nome: "Banshee", "preco": 118800, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Banshee-GTAV-front.webp", "categoria": "desportivos", "vd": 175, "vf": 190, "kg": 60 },
+  { marca: "Bravado", nome: "Banshee 900R", "preco": 180000, "imagem": "https://static.wikia.nocookie.net/gtawiki/images/0/0b/Banshee900R-GTAO-front.png", "categoria": "desportivos", "vd": 220, "vf": 255, "kg": 60 },
+  { marca: "Bravado", nome: "Banshee Classic", "preco": 150000, "imagem": "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_230555882.png", "categoria": "desportivos", "vd": 210, "vf": 225, "kg": 60 },
+  { marca: "Bravado", nome: "Bison", "preco": 18500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Bison-GTAV-front.webp", "categoria": "suv", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Buffalo", "preco": 79500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Buffalo-GTAVe-front.webp", "categoria": "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Buffalo Hellhound", "preco": 102500, "imagem": "https://img.gta5-mods.com/q95/images/bravado-buffalo-hellhound-add-on-sounds/e86a41-0.png", "categoria": "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Buffalo S", "preco": 85500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/BuffaloS-GTAV-front.webp", "categoria": "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Buffalo STX", "preco": 212500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/BuffaloSTX-GTAOe-front.webp", "categoria": "desportivos", "vd": 185, "vf": 195, "kg": 60 },
+  { marca: "Bravado", nome: "Buffalo STX Hellfire (Tuned)", "preco": 350000, "imagem": "https://static.wikia.nocookie.net/gtawiki/images/a/a0/BuffaloSTX-GTAOe-front.png", "categoria": "desportivos", "tipo": "unlimited", "vd": 255, "vf": 270, "kg": 60 },
+  { marca: "Bravado", nome: "Cleanloader", "preco": 9000, "imagem": "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_230641401.png", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Dorado", "preco": 17500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Dorado-GTAOe-front.webp", "categoria": "suv", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Feroci Custom", "preco": 82000, "imagem": "https://img.gta5-mods.com/q95/images/bravado-feroci-custom-add-on-tuning-liveries/68d7c9-VIP.png", "categoria": "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Gauntlet", "preco": 104700, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Gauntlet-GTAV-front.webp", "categoria": "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Gauntlet Classic", "preco": 74300, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/GauntletClassic-GTAO-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Gauntlet Classic Custom", "preco": 45000, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/GauntletClassicCustom-GTAO-front.webp", "categoria": "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Gauntlet Hellfire", "preco": 125500, "imagem": "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/GauntletHellfire-GTAO-front.webp", "categoria": "comuns", "vd": 0, "vf": 0, "kg": 0 },
+   { marca: "Bravado", nome: "Greenwood", preco: 23500, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Greenwood-GTAOe-front.webp", categoria: "classicos", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Gresley", preco: 19950, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Gresley-GTAVe-FrontQuarter.webp", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Hellfire Diablo", preco: 300000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_230828389.png", categoria: "comuns", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Mastodon", preco: 12400, imagem: "https://img.gta5-mods.com/q95/images/bravado-mastodon-duneloader-add-on-liveries-template/1c5889-Mastodon.jpg", categoria: "carrinhas", vd: 0, vf: 0, kg: 60 },
+  { marca: "Bravado", nome: "Mega Slaab", preco: 850000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_230843939.png", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Paradise", preco: 7000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d6/Paradise-GTAV-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+  { marca: "Bravado", nome: "RTX", preco: 400000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_230852444.png", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+  { marca: "Bravado", nome: "Rumpo", preco: 7000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Rumpo-GTAV-front.webp", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+  { marca: "Bravado", nome: "Rumpo Custom", preco: 31000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/RumpoCustom-GTAO-front.webp", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+  { marca: "Bravado", nome: "Rumpo Escape", preco: 13200, imagem: "https://img.gta5-mods.com/q95/images/bravado-rumpo-xl-add-on/75bf9e-Escaping.jpg", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+  { marca: "Bravado", nome: "Verlierer", preco: 165000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Verlierer-GTAO-front.webp", categoria: "desportivos", "vd": 190, "vf": 200, "kg": 60 },
+  { marca: "Bravado", nome: "Youga", preco: 6500, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Youga-GTAV-front.webp", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+  { marca: "Bravado", nome: "Youga Classica", preco: 7000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/YougaClassic-GTAO-front.webp", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+  { marca: "Bravado", nome: "Youga Classica 4x4", preco: 28000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/YougaClassic4x4-GTAO-front.webp", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+  { marca: "Bravado", nome: "Youga Custom", preco: 15000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/YougaCustom-GTAOe-FrontQuarter.webp", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+
+{ marca: "Brute", nome: "Camper", preco: 10300, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Camper-GTAV-front.webp", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+{ marca: "Brute", nome: "Pony", preco: 7000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Pony2-GTAV-front.webp", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+
+{ marca: "Burgerfahrzeug", nome: "Odyssey R", preco: 200000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_233148690.png", categoria: "desportivos", tipo: "unlimited", "vd": 215, "vf": 225, "kg": 60 },
+
+{ marca: "Canis", nome: "Bodhi", preco: 7500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8f/Bodhi-GTAV-front.png", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+{ marca: "Canis", nome: "Kalahari", preco: 4000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b7/Kalahari-GTAV-front.png", categoria: "classicos", "vd": 0, "vf": 0, "kg": 0 },
+{ marca: "Canis", nome: "Kamacho", preco: 54000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/47/Kamacho-GTAO-front.png", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+{ marca: "Canis", nome: "Mesa", preco: 9000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/70/Mesa-GTAVe-front.png", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+{ marca: "Canis", nome: "Mesa R 2030", preco: 100000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-24_233625584.png", categoria: "suv", tipo: "unlimited", "vd": 0, "vf": 0, "kg": 0 },
+{ marca: "Canis", nome: "Mesa Trail", preco: 32100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/3c/Mesa3-GTAVe-front.png", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+{ marca: "Canis", nome: "Seminole", preco: 5000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/a0/Seminole-GTAV-front.png", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+{ marca: "Canis", nome: "Seminole Frontier", preco: 23500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/0c/SeminoleFrontier-GTAO-front.png", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+{ marca: "Canis", nome: "Terminus", preco: 45500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/43/Terminus-GTAOe-front.png", categoria: "suv", "vd": 0, "vf": 0, "kg": 0 },
+
+{ marca: "Cheval", nome: "Dingo", preco: 24800, imagem: "https://img.gta5-mods.com/q85-w800/images/cheval-dingo-add-on-replace/59fe91-20180124180529_1.jpg", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Cheval", nome: "Fugitive", preco: 14400, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/5c/Fugitive-GTAV-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Cheval", nome: "Fugitive SS", preco: 18400, imagem: "https://img.gta5-mods.com/q95/images/cheval-fugitive-ss/fd778e-7.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Cheval", nome: "Marshall", preco: 130000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/a2/Marshall-GTAV-front.png", categoria: "outros", vd: 0, vf: 0, kg: 0 },
+{ marca: "Cheval", nome: "Picador", preco: 10500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/55/Picador-GTAVe-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Cheval", nome: "Picador EXR", preco: 60000, imagem: "https://static.wikia.nocookie.net/gtafanon/images/f/fa/PicadorEXR_vehicle.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Cheval", nome: "Surge", preco: 4600, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/c2/Surge-GTAV-front.png-width-down/536?cb=20161018181104", categoria: "eletricos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Cheval", nome: "Taipan", preco: 850000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/4c/Taipan-GTAO-front.png", categoria: "desportivos", vd: 210, vf: 230, kg: 60 },
+
+{ marca: "Classique", nome: "Broadway", preco: 30000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/52/Broadway-GTAOe-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Coil", nome: "Cyclone", preco: 150000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/07/Cyclone-GTAO-front.png-width-down/268?cb=20180331183602", categoria: "eletricos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Coil", nome: "Inductor", preco: 300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/84/Inductor-GTAOe-front.png", categoria: "bikes", vd: 0, vf: 0, kg: 0 },
+{ marca: "Coil", nome: "Junk Energy Inductor", preco: 300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/be/JunkEnergyInductor-GTAOe-front.png", categoria: "bikes", vd: 0, vf: 0, kg: 0 },
+{ marca: "Coil", nome: "Raiden", preco: 93800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b5/Raiden-GTAO-front.png", categoria: "eletricos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Coil", nome: "Taranis", preco: 125000, imagem: "https://static.wikia.nocookie.net/gtafanon/images/5/55/89dd67-Taranis_%285_of_10%29.jpg", categoria: "eletricos", tipo: "unlimited", vd: 0, vf: 0, kg: 0 },
+{ marca: "Coil", nome: "Voltic", preco: 58400, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/87/Voltic-GTAV-front.png", categoria: "eletricos", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Declasse", nome: "Alamo", preco: 80000, imagem: "https://img.gta5-mods.com/q95/images/declasse-alamo-2600ls-add-on/16eebf-GTA5_2022_02_03_21_15_32_730.jpg", categoria: "suv", tipo: "unlimited", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Alamo 2500LS", preco: 48000, imagem: "https://img.gta5-mods.com/q95/images/declasse-alamo-add-on/62a44e-Grand_Theft_Auto_V_Screenshot_2020.03.30_-_17.38.58.95.jpg", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Asea", preco: 6200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/58/Asea-GTAV-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Burrito", preco: 8000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/80/Burrito3-GTAV-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+{ marca: "Declasse", nome: "Burrito Custom", preco: 16500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/4f/GangBurrito2-GTAO-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+{ marca: "Declasse", nome: "Burrito Lost MC", preco: 20000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d0/GangBurrito-GTAV-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+{ marca: "Declasse", nome: "Draugur", preco: 63000, imagem: "https://www.gtabase.com/images/jch-optimize/ng/images_gta-5_vehicles_off-road_main_draugur.webp", categoria: "offroad", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Drift Tampa", preco: 28400, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/51/DriftTampa-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Granger", preco: 37000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/de/Granger-GTAV-front.png", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Granger 3600XL", preco: 65000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/75/Granger3600LX-GTAOe-front.png", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Impaler", preco: 16500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/43/Impaler-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Impaler SZ", preco: 19500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/eb/ImpalerSZ-GTAOe-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Mamba", preco: 72100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d4/Mamba-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Merit Classic", preco: 24000, imagem: "https://img.gta5-mods.com/q85-w800/images/declasse-merit-classic/f1f8d1-GTA5%202018-01-07%2000-43-46-544.jpg", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Moonbeam", preco: 7000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b3/Moonbeam-GTAO-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 60 },
+{ marca: "Declasse", nome: "Moonbeam Custom", preco: 11000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/94/MoonbeamCustom-GTAO-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 60 },
+{ marca: "Declasse", nome: "Premier", preco: 67500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/ca/Premier-GTAV-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Rancher XL", preco: 10250, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/59/RancherXL-GTAV-front.png", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Rhapsody", preco: 9800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/cc/Rhapsody-GTAV-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Sabre GT", preco: 25500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e6/SabreTurbo-GTAV-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Sabre Turbo", preco: 23500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/18/SabreTurboCustom-GTAO-front.png-width-down/1000?cb=20160316181730", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Stallion", preco: 16850, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/00/Stallion-GTAV-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Tampa", preco: 22300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d8/Tampa-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Tornado", preco: 8000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/2f/Tornado-GTAV-front.png", categoria: "classicos", tipo: "unlimited", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Tornado Custom", preco: 6000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/69/TornadoCustomUp-GTAO-front.png", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Tornado Rat Rod", preco: 25000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/79/TornadoRatRod-GTAO-front.png", categoria: "outros", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Tulip", preco: 19600, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/2b/Tulip-GTAO-front.png-width-down/1000?cb=20181214182016", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Vamos", preco: 16700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/ac/Vamos-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Vigero", preco: 130000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/c4/Vigero-GTAV-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Voodoo Custom", preco: 7500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/fc/VoodooCustom-GTAO-front.png-width-down/1000?cb=20160502170144", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Voodoo LE", preco: 13200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/15/Voodoo-GTAV-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Yosemite", preco: 14250, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/09/Yosemite-GTAO-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 60 },
+{ marca: "Declasse", nome: "Yosemite Brute", preco: 61200, imagem: "https://img.gta5-mods.com/q85-w800/images/brute-yosemite/fde871-GTA5%202017-03-06%2023-04-55-442.jpg", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Yosemite Drift", preco: 110000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/7f/DriftYosemite-GTAO-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 60 },
+{ marca: "Declasse", nome: "Yosemite Rancher", preco: 35000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/0a/YosemiteRancher-GTAO-front.png", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Yosemite SWB", preco: 53200, imagem: "https://img.gta5-mods.com/q85-w800/images/declasse-yosemite-swb-add-on-template/c8c15e-271590_20200628153419_1.jpg", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Declasse", nome: "Yosemite XL", preco: 5000, imagem: "https://img.gta5-mods.com/q95/images/declasse-yosemite-swb-add-on-template/5def9b-271590_20200628114522_1.jpg", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Dewbauchee", nome: "Champion", preco: 290000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/5f/Champion-GTAOe-front.png", categoria: "desportivos", vd: 190, vf: 200, kg: 60 },
+{ marca: "Dewbauchee", nome: "Exemplar", preco: 80350, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/de/Exemplar-GTAV-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dewbauchee", nome: "JB700", preco: 78000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/70/JB700-GTAV-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dewbauchee", nome: "Massacro", preco: 275000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/57/Massacro-GTAVe-FrontQuarter.png", categoria: "desportivos", vd: 215, vf: 230, kg: 60 },
+{ marca: "Dewbauchee", nome: "Massacro Racecar", preco: 280000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/57/Massacro-GTAVe-FrontQuarter.png", categoria: "desportivos", vd: 185, vf: 200, kg: 60 },
+{ marca: "Dewbauchee", nome: "Rapid GT", preco: 96000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/42/RapidGT-GTAV-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dewbauchee", nome: "Rapid GT Classic", preco: 48500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/13/RapidGTClassic-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dewbauchee", nome: "Rapid GT Convertible", preco: 98000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f8/RapidGT2-GTAV-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dewbauchee", nome: "Seven-70", preco: 162500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/21/Seven70-GTAO-front.png", categoria: "desportivos", vd: 190, vf: 200, kg: 60 },
+{ marca: "Dewbauchee", nome: "Specter", preco: 158300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/7b/Specter-GTAO-front.png", categoria: "desportivos", vd: 185, vf: 200, kg: 60 },
+{ marca: "Dewbauchee", nome: "Specter Custom", preco: 188300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/01/SpecterCustom-GTAO-front.png", categoria: "desportivos", vd: 170, vf: 185, kg: 60 },
+{ marca: "Dewbauchee", nome: "SuperGTS", preco: 380000, imagem: "https://img.gta5-mods.com/q95/images/dewbauchee-supergts-add-on-tuning-sounds-lods/5f1ba5-2.jpg", categoria: "desportivos", vd: 190, vf: 210, kg: 60 },
+{ marca: "Dewbauchee", nome: "Vagner", preco: 780000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/14/Vagner-GTAO-front.png", categoria: "desportivos", vd: 200, vf: 215, kg: 60 },
+{ marca: "Dewbauchee", nome: "Vesper", preco: 273000, imagem: "https://img.gta5-mods.com/q95/images/dewbauchee-vesper-add-on-sounds/a91814-EVE-20200301182517.181.jpg", categoria: "desportivos", vd: 240, vf: 255, kg: 60 },
+
+{ marca: "Dinka", nome: "1000R ", preco: 50000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-25_011413769.png", categoria: "motas", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Akuma", preco: 57500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/9a/Akuma-GTAV-front.png", categoria: "motas", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Blista", preco: 15800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/c0/Blista-GTAV-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Blista Compact", preco: 16800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/2c/BlistaCompact-GTAVe-FrontQuarter.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Double T", preco: 35500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8c/DoubleT-GTAV-front.png", categoria: "motas", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Enduro", preco: 14200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/ef/Enduro-GTAO-front.png", categoria: "motas", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Enduro Mk2", preco: 35000, imagem: "https://img.gta5-mods.com/q95/images/dinka-enduro-mk2-add-on-fivem/2887db-Capture10.JPG", categoria: "motas", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Frakas", preco: 5000, imagem: "https://img.gta5-mods.com/q95/images/dinka-frakas-add-on-tuning-liverys/3f0475-1.jpg", categoria: "motas", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Jester", preco: 174800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b3/Jester-GTAVe-FrontQuarter.png", categoria: "desportivos", vd: 185, vf: 200, kg: 60 },
+{ marca: "Dinka", nome: "Jester Classic", preco: 185000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/2d/JesterClassic-GTAOe-FrontQuarter.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Jester RR", preco: 230000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8f/JesterRR-GTAOe-FrontQuarter.png", categoria: "desportivos", vd: 205, vf: 225, kg: 60 },
+{ marca: "Dinka", nome: "Jester Racecar", preco: 165000, imagem: "https://preview.redd.it/dinka-jester-racecar-variant-v0-wkc64iw60sbb1.png?width=1080&crop=smart&auto=webp&s=535c4b5c376cde3309f1aceb87aeddfb1a734e7c", categoria: "desportivos", vd: 180, vf: 195, kg: 60 },
+{ marca: "Dinka", nome: "Kuroi", preco: 47000, imagem: "https://img.gta5-mods.com/q95/images/dinka-kuroi-add-on/60e5aa-20180508115739_1.jpg", categoria: "motas", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Nexus", preco: 250000, imagem: "https://img.gta5-mods.com/q95/images/dinka-nexus/c4a1a4-39750083873_d448fa9a25_o.jpg", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "RT3000", preco: 127500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/ea/RT3000-GTAO-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Serena", preco: 58000, imagem: "https://static.wikia.nocookie.net/gtafanon/images/4/45/Dinka_Serena.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Sugoi", preco: 77600, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/82/Sugoi-GTAO-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Thrust", preco: 18000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/4e/Thrust-GTAV-front.png", categoria: "motas", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Urban", preco: 12600, imagem: "https://img.gta5-mods.com/q95/images/dinka-urban-add-on-tuning-liveries-sound/6a5b5c-1-min.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Verus", preco: 20000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/62/Verus-GTAO-front.png", categoria: "motas", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Veto K", preco: 80000, imagem: "https://r2.fivemanage.com/txHLjrfxGuO5aGfPkI0fH/Capturadeecr2025-06-20095956.png", categoria: "outros", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Vindicator", preco: 20600, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/5f/Vindicator-GTAV-front.png", categoria: "motas", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dinka", nome: "Whiplash", preco: 34000, imagem: "https://img.gta5-mods.com/q85-w800/images/dinka-whiplash-addon-fivem-template/df8120-1.png", categoria: "motas", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Dundreary", nome: "Landstalker XL", preco: 25700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/1b/LandstalkerXL-GTAO-front.png", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dundreary", nome: "Regina", preco: 3000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/71/Regina-GTAV-front.png", categoria: "comuns", tipo: "unlimited", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dundreary", nome: "Regina Sedan", preco: 7500, imagem: "https://img.gta5-mods.com/q95/images/tlad-regina-sedan-replace/d9ef57-20171229175403_1.jpg", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Dundreary", nome: "Stretch", preco: 55500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/48/Stretch-GTAV-front.png", categoria: "presidenciais", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Emperor", nome: "Habanero", preco: 9300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/53/Habanero-GTAVe-FrontQuarter.png", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Emperor", nome: "Vectre", preco: 290000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_182734932.png", categoria: "desportivos", vd: 195, vf: 215, kg: 60 },
+
+{ marca: "Entity", nome: "Entity XXR", preco: 740000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/9a/EntityXXR-GTAO-front.png", categoria: "desportivos", vd: 210, vf: 225, kg: 60 },
+
+{ marca: "Enus", nome: "Cognoscenti", preco: 35000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/ff/Cognoscenti-GTAO-front.png", categoria: "presidenciais", vd: 0, vf: 0, kg: 0 },
+{ marca: "Enus", nome: "Cognoscenti Cabrio", preco: 36000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/10/CogCabrioTopless-GTAV-FrontQuarter.png-width-down/1000?cb=20180331161313", categoria: "presidenciais", vd: 0, vf: 0, kg: 0 },
+{ marca: "Enus", nome: "Cognoscenti Luxe", preco: 52000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-25_015033457.png", categoria: "presidenciais", vd: 0, vf: 0, kg: 0 },
+{ marca: "Enus", nome: "Deity", preco: 75000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/96/Deity-GTAOe-front.png", categoria: "presidenciais", vd: 0, vf: 0, kg: 0 },
+{ marca: "Enus", nome: "Huntley S", preco: 30250, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/2f/HuntleyS-GTAVe-FrontQuarter.png", categoria: "presidenciais", vd: 0, vf: 0, kg: 0 },
+{ marca: "Enus", nome: "Jubilee", preco: 65000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/a2/Jubilee-GTAOe-front.png", categoria: "presidenciais", vd: 0, vf: 0, kg: 0 },
+{ marca: "Enus", nome: "Paragon R", preco: 250000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/cb/ParagonR-GTAO-front.png", categoria: "presidenciais", vd: 0, vf: 0, kg: 0 },
+{ marca: "Enus", nome: "Stafford", preco: 28000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/38/Stafford-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Enus", nome: "Super Diamond", preco: 180500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d8/SuperDiamond-GTAV-front.png", categoria: "presidenciais", vd: 0, vf: 0, kg: 0 },
+{ marca: "Enus", nome: "Windsor", preco: 175000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/26/Windsor-GTAV-front.png", categoria: "presidenciais", vd: 0, vf: 0, kg: 0 },
+{ marca: "Enus", nome: "Windsor Drop", preco: 80000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d3/WindsorDropDown-GTAO-front.png", categoria: "presidenciais", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Fathom", nome: "FQ2", preco: 8700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/6e/FQ2-GTAV-front.png", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Fathom", nome: "FR 36", preco: 58500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8f/FR36-GTAOe-front.png", categoria: "desportivos", vd: 180, vf: 195, kg: 60 },
+
+{ marca: "Gallivanter", nome: "Baller", preco: 26500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/fc/Baller-GTAVe-FrontQuarter.png", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Gallivanter", nome: "Baller LE", preco: 22500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/71/BallerLE-GTAO-front.png", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Grotti", nome: "Bestia GTS", preco: 124700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/00/BestiaGTS-GTAOe-FrontQuarter.png", categoria: "desportivos", vd: 185, vf: 195, kg: 60 },
+{ marca: "Grotti", nome: "Brioso 300", preco: 20000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/28/Brioso300-GTAO-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Brioso R/A", preco: 21800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/80/BriosoRA-GTAO-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Carbonizzare", preco: 145800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/7b/CarbonizzareDown-GTAV-front.png", categoria: "desportivos", vd: 185, vf: 195, kg: 60 },
+{ marca: "Grotti", nome: "Cheetah", preco: 720500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/a3/Cheetah-GTAVe-front.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Cheetah Classic", preco: 190000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/38/CheetahClassic-GTAO-front.png", categoria: "classicos", vd: 230, vf: 240, kg: 60 },
+{ marca: "Grotti", nome: "Furia", preco: 370000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8a/Furia-GTAO-front.png", categoria: "desportivos", vd: 185, vf: 195, kg: 60 },
+{ marca: "Grotti", nome: "GT500", preco: 42500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/90/GT500-GTAO-RGSC-MainNew.jpg", categoria: "classicos", tipo: "unlimited", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Itali GTO", preco: 550000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/ec/ItaliGTO-GTAO-front.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Itali RSX", preco: 650000, imagem: "https://www.gta5rides.com/vehicleimages/cropped/ItaliRSX-GTAO-front.png.jpg", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Pista Hycade ", preco: 1200000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_213054181.png", categoria: "supercarros", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Stinger", preco: 23800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/41/Stinger-GTAV-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Stinger GT", preco: 31700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/c5/StingerGT-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Stinger TT", preco: 365000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d3/StingerTT-GTAOe-front.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Turismo Classic", preco: 170000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/9a/TurismoClassic-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Turismo R", preco: 375000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/36/TurismoR-GTAVe-front.png-width-down/536?cb=20220809140421", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Turismo R340", preco: 182000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_213129676.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "Visione", preco: 500000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/57/Visione-GTAO-front.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Grotti", nome: "X80 Proto", preco: 700000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b3/X80Proto-GTAO-front.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Hijak", nome: "Khamelion", preco: 23700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/1f/Khamelion-GTAV-front.png", categoria: "eletricos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Hijak", nome: "Rustom", preco: 110800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/2c/Ruston-GTAO-front.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Hotring", nome: "sabre", preco: 130000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8f/HotringSabre-GTAO-front.png", categoria: "desportivos", tipo: "unlimited", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Imponte", nome: "Deluxo", preco: 55000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/15/Deluxo-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Imponte", nome: "Dukes", preco: 20600, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/53/Dukes-GTAV-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Imponte", nome: "Dukes Beater", preco: 25900, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/95/BeaterDukes-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Imponte", nome: "Nightshade", preco: 18100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/3e/Nightshade-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Imponte", nome: "Phoenix", preco: 12250, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/af/Phoenix-GTAV-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Imponte", nome: "Ruiner", preco: 11600, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/67/Ruiner-GTAV-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Imponte", nome: "Ruiner ZZ-8", preco: 60900, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/c5/RuinerZZ8-GTAOe-front.png", categoria: "desportivos", vd: 170, vf: 185, kg: 60 },
+
+{ marca: "Invetero", nome: "Coquette", preco: 250400, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/08/Coquette-GTAV-front.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Invetero", nome: "Coquette BlackFin", preco: 91000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/df/CoquetteBlackFin-GTAV-front.png", categoria: "classicos", tipo: "supervip", vd: 0, vf: 0, kg: 0 },
+{ marca: "Invetero", nome: "Coquette Classic", preco: 134000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/15/CoquetteClassicTopless-GTAV-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Invetero", nome: "Coquette D10", preco: 280000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/eb/CoquetteD10-GTAO-front.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Invetero", nome: "Coquette X", preco: 220000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_231351830.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Invetero", nome: "Vigero 1ZL", preco: 145000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_231404859.png", categoria: "desportivos", tipo: "unlimited", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "joBuilt", nome: "Hauler", preco: 25000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/2d/Hauler-GTAV-front.png", categoria: "camioes", vd: 0, vf: 0, kg: 0 },
+{ marca: "joBuilt", nome: "Phantom", preco: 25000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/ff/Phantom-GTAV-front.png", categoria: "camioes", tipo: "unlimited", vd: 0, vf: 0, kg: 0 },
+{ marca: "joBuilt", nome: "Phantom Classic", preco: 28000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/70/PhantomCustom-GTAO-front.png", categoria: "camioes", tipo: "unlimited", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Jobuilt 2", nome: "Cerberus 200", preco: 21000, imagem: "https://img.gta5-mods.com/q95/images/mtl-cerberus-200-300-add-on-liveries-template/f96057-Screenshot%20(3824).jpg", categoria: "camioes", vd: 0, vf: 0, kg: 0 },
+{ marca: "Jobuilt 2", nome: "HVY Biff Semi", preco: 18000, imagem: "https://img.gta5-mods.com/q85-w800/images/hvy-biff-semi-add-on/a03432-unknown.jpg", categoria: "camioes", vd: 0, vf: 0, kg: 0 },
+{ marca: "Jobuilt 2", nome: "Hauler 270", preco: 20200, imagem: "https://img.gta5-mods.com/q95/images/jobuilt-hauler-270-add-on-replace-liveries-template-sounds/d3d681-Hauler_270_14.jpg", categoria: "camioes", vd: 0, vf: 0, kg: 0 },
+{ marca: "Jobuilt 2", nome: "Phantom Custom", preco: 35000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/70/PhantomCustom-GTAO-front.png", categoria: "camioes", vd: 0, vf: 0, kg: 0 },
+
+{ marca: "Karin", nome: "190Z", preco: 50000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/be/190z-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Ariant", preco: 155000, imagem: "https://img.gta5-mods.com/q95/images/karin-ariant-add-on-tuning-sounds-lods/631216-2.jpg", categoria: "desportivos", tipo: "unlimited", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Asterope", preco: 16600, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/ec/Asterope-GTAV-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Asterope GZ", preco: 27300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/71/AsteropeGZ-GTAOe-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "BeeJay XL", preco: 18200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/da/BeeJayXL-GTAV-front.png", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Boor", preco: 40000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/22/Boor-GTAOe-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Calico GTF", preco: 225000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/ad/CalicoGTF-GTAO-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Dilettante", preco: 3500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/84/Dilettante-GTAVe-front.png", categoria: "eletricos", tipo: "unlimited", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Everon", preco: 82500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e1/Everon-GTAO-front.png", categoria: "offroads", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Futo", preco: 25550, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/ea/Futo-GTAVe-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Futo GTX", preco: 45000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/bd/FutoGTX-GTAO-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Intruder", preco: 16500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/7c/Intruder-GTAV-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Kuruma", preco: 68300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/4b/Kuruma-GTAOe-FrontQuarter.png", categoria: "desportivos", vd: 210, vf: 220, kg: 60 },
+{ marca: "Karin", nome: "Previon", preco: 122100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d9/Previon-GTAO-front.png", categoria: "comuns", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Raider", preco: 27500, imagem: "https://img.gta5-mods.com/q85-w800/images/karin-rebel-sport-pack-add-on-replace-e7a37ce7-eca2-4abb-943f-b182256d2931/038908-20190412011622_1.jpg", categoria: "suv", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Rebel Coyote", preco: 82000, imagem: "https://img.gta5-mods.com/q95/images/karin-rebel-coyote-add-on-fivem/6bf71a-coy6.jpg", categoria: "offroads", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Sultan", preco: 64200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/34/Sultan-GTAVe-front.png", categoria: "desportivos", vd: 170, vf: 190, kg: 60 },
+{ marca: "Karin", nome: "Sultan Classic", preco: 225000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f3/SultanClassic-GTAO-front.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Sultan Classic CTX ", preco: 500000, imagem: "https://gom-modeling.com/cdn/shop/files/218_20240407150701_1.png?v=1712517375&width=1100", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Sultan Hycade ", preco: 700000, imagem: "https://gom-modeling.com/cdn/shop/files/218_20240424101634_1.png?v=1713968772&width=1100", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Sultan RS", preco: 150300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/c1/SultanRS-GTAO-front.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Sultan RS Classic", preco: 200000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/45/SultanRSClassic-GTAO-front.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Sultan RS V8", preco: 450000, imagem: "https://img.gta5-mods.com/q95/images/sultan-rs-v8-twinturbo-add-on/183dd1-3.png", categoria: "desportivos", vd: 0, vf: 0, kg: 0 },
+{ marca: "Karin", nome: "Vivanite", preco: 24300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/45/Vivanite-GTAOe-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 120 },
+
+{ marca: "LCC", nome: "Avarus", preco: 16300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/1a/Avarus-GTAO-front.png", categoria: "motas", },
+{ marca: "LCC", nome: "Hexer", preco: 14700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/64/Hexer-GTAV-front.png", categoria: "motas" },
+{ marca: "LCC", nome: "Innovation", preco: 20500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/13/Innovation-GTAV-front.png", categoria: "motas" },
+{ marca: "LCC", nome: "Sanctus", preco: 60000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/be/Sanctus-GTAO-front.png", categoria: "motas" },
+
+{ marca: "Lampadati", nome: "Casco", preco: 72700, imagem: "https://www.gtabase.com/images/gta-5/vehicles/sports-classic/main/casco.jpg", categoria: "classicos" },
+{ marca: "Lampadati", nome: "Cinquemila", preco: 175000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b1/Cinquemila-GTAOe-front.png", categoria: "desportivos" },
+{ marca: "Lampadati", nome: "Corsita", preco: 525000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/aa/Corsita-GTAOe-front.png", categoria: "desportivos" },
+{ marca: "Lampadati", nome: "Felon", preco: 26000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/de/Felon-GTAV-front.png", categoria: "comuns" },
+{ marca: "Lampadati", nome: "Felon GT", preco: 29200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/17/FelonGTUp-GTAV-front.png", categoria: "comuns" },
+{ marca: "Lampadati", nome: "Furore GT", preco: 1300000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/56/FuroreGT-GTAV-front.png", categoria: "supercarros" },
+{ marca: "Lampadati", nome: "Komoda", preco: 245000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_010639461.png", categoria: "desportivos", },
+{ marca: "Lampadati", nome: "Michelli GT", preco: 22100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e0/MichelliGT-GTAO-front.png", categoria: "classicos", },
+{ marca: "Lampadati", nome: "Novak", preco: 62000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/ec/Novak-GTAO-front.png", categoria: "suv" },
+{ marca: "Lampadati", nome: "Pigalle", preco: 17500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d4/Pigalle-GTAV-front.png", categoria: "classicos" },
+{ marca: "Lampadati", nome: "Tigon", preco: 420000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/37/Tigon-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Lampadati", nome: "Tropos Rallye", preco: 61000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/df/TroposRallye-GTAO-front.png", categoria: "classicos" },
+{ marca: "Lampadati", nome: "Viseris", preco: 215000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b2/Viseris-GTAO-front.png", categoria: "classicos" },
+
+{ marca: "MTL", nome: "Packer", preco: 25000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/68/Packer-GTAV-front.png", categoria: "camioes", tipo: "unlimited" },
+
+{ marca: "Maibatsu", nome: "Manchez", preco: 24000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/c6/Manchez-GTAO-front.png", categoria: "motas" },
+{ marca: "Maibatsu", nome: "Manchez Crawl", preco: 32500, imagem: "https://img.gta5-mods.com/q95/images/maibatsu-manchez-crawl-add-on/f3b716-4.jpg", categoria: "motas" },
+{ marca: "Maibatsu", nome: "Manchez Scout", preco: 32000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b3/ManchezScout-GTAO-front.png", categoria: "motas" },
+{ marca: "Maibatsu", nome: "MonstroCiti", preco: 36400, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/1c/MonstroCiti-GTAOe-front.png", categoria: "offroads" },
+{ marca: "Maibatsu", nome: "Mule", preco: 30000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/07/Mule-GTAV-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 350 },
+{ marca: "Maibatsu", nome: "Mule 4x4", preco: 35000, imagem: "https://img.gta5-mods.com/q85-w800/images/maibatsu-mule-4x4-addon/64e916-1.jpg", categoria: "carrinhas", vd: 0, vf: 0, kg: 60 },
+{ marca: "Maibatsu", nome: "Penumbra", preco: 161000, imagem: "https://static.wikia.nocookie.net/gta/images/c/cc/Penumbra-GTAV-front.png&path-prefix=pt", categoria: "desportivos" },
+{ marca: "Maibatsu", nome: "Penumbra FF", preco: 234000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/bc/PenumbraFF-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Maibatsu", nome: "Revolution S", preco: 285000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_013119535.png", categoria: "desportivos" },
+{ marca: "Maibatsu", nome: "Sanchez", preco: 19500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/93/Sanchez2-GTAV-front.png", categoria: "motas" },
+{ marca: "Maibatsu", nome: "Sunrise 'Hycade Novo X' ", preco: 500000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_013133976.png", categoria: "desportivos" },
+{ marca: "Maibatsu", nome: "Vincent Tourer", preco: 45000, imagem: "https://img.gta5-mods.com/q85-w800/images/maibatsu-vincent-tourer-add-on-tuning-liveries/7a7a59-Vincent_7.png", categoria: "desportivos", vd: 170, vf: 180, kg: 60 },
+
+{ marca: "Mammoth", nome: "Patriot", preco: 22800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/90/Patriot-GTAV-front.PNG", categoria: "suv" },
+{ marca: "Mammoth", nome: "Patriot Mil", preco: 107500, imagem: "https://www.gtabase.com/images/gta-5/vehicles/off-road/main/patriot-mil-spec.jpg", categoria: "offroads" },
+{ marca: "Mammoth", nome: "Patriot Stretch", preco: 57500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/4b/PatriotStretch-GTAO-front.png", categoria: "presidenciais" },
+{ marca: "Mammoth", nome: "Squaddie", preco: 111300, imagem: "https://static1.srcdn.com/wordpress/wp-content/uploads/2021/12/GTA-Online-How-to-Get-Squaddie-Basic-Mammoth-Squaddie.jpg?q=50&fit=crop&w=1140&h=&dpr=1.5", categoria: "offroads" },
+
+{ marca: "Maxwell", nome: "Asbo", preco: 6500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/bd/Asbo-GTAO-front.png", categoria: "comuns" },
+{ marca: "Maxwell", nome: "Molecule", preco: 36500, imagem: "https://static.wikia.nocookie.net/gtafanon/images/f/f0/385e95-MM_1smol.jpg-width-down/1000?cb=20201006094442", categoria: "outros" },
+{ marca: "Maxwell", nome: "Vagrant", preco: 100000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/27/Vagrant-GTAO-front.png", categoria: "buggys" },
+
+{ marca: "Misc", nome: "BMX Custom", preco: 1500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/64/BMX-GTAV-front.png", categoria: "bikes" },
+{ marca: "Misc", nome: "Blazer", preco: 10700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/35/Blazer-GTAV-front.png", categoria: "motas" },
+{ marca: "Misc", nome: "BMX", preco: 100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/64/BMX-GTAV-front.png", categoria: "bikes", tipo: "unlimited" },
+{ marca: "Misc", nome: "Cruiser", preco: 100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/bd/Cruiser-GTAV-front.png", categoria: "bikes", tipo: "unlimited" },
+{ marca: "Misc", nome: "Endurance Race Bike", preco: 100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/53/EndurexRaceBike-GTAV-front.png", categoria: "bikes", tipo: "unlimited" },
+{ marca: "Misc", nome: "Fixter", preco: 100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/74/Fixter-GTAV-front.png", categoria: "bikes", tipo: "unlimited" },
+{ marca: "Misc", nome: "Lowrider Bike", preco: 2000, imagem: "https://i.etsystatic.com/52021386/r/il/6eaea5/6018062825/il_794xN.6018062825_5pfl.jpg", categoria: "bikes" },
+{ marca: "Misc", nome: "Raji Tunak", preco: 7500, imagem: "https://img.gta5-mods.com/q95/images/raji-tunak-add-on-template-liveries/47445c-tunik1.jpg", categoria: "outros" },
+{ marca: "Misc", nome: "Scorcher", preco: 100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/be/Scorcher-GTAV-front.png", categoria: "bikes", tipo: "unlimited" },
+{ marca: "Misc", nome: "Tricycle", preco: 1500, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_013252452.png", categoria: "bikes" },
+{ marca: "Misc", nome: "Try-Cycle Race Bike", preco: 100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/5d/Tri-CyclesRaceBike-GTAV-front.png", categoria: "bikes", tipo: "unlimited" },
+{ marca: "Misc", nome: "Whippet Race Bike", preco: 100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/3b/WhippetRaceBike-GTAV-front.png", categoria: "bikes", tipo: "unlimited" },
+
+{ marca: "Nagasaki", nome: "BF400", preco: 23000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/00/BF400-GTAO-front.png", categoria: "motas" },
+{ marca: "Nagasaki", nome: "Blazer Recon", preco: 19500, imagem: "https://img.gta5-mods.com/q95/images/nagasaki-blazer-recon-atv-add-on-replace-liveries-template/085cb1-20180214201606_1.jpg", categoria: "motas" },
+{ marca: "Nagasaki", nome: "Blazer Sport", preco: 15700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/35/Blazer-GTAV-front.png", categoria: "motas" },
+{ marca: "Nagasaki", nome: "Carbon RS", preco: 41300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/2d/CarbonRS-GTAV-front.png", categoria: "motas" },
+{ marca: "Nagasaki", nome: "Chimera", preco: 35900, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8a/Chimera-GTAO-front.png", categoria: "motas" },
+{ marca: "Nagasaki", nome: "Hot Rod Blazer", preco: 6400, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/05/HotRodBlazer-GTAV-front.png", categoria: "motas" },
+{ marca: "Nagasaki", nome: "Kenshim", preco: 46300, imagem: "https://static.wikia.nocookie.net/gangland-nlg/images/6/68/Kaneda_Kenshin.png", categoria: "motas" },
+{ marca: "Nagasaki", nome: "Outlwa", preco: 27000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/a5/Outlaw-GTAO-front.png-width-down/1200?cb=20191213212756", categoria: "buggys" },
+{ marca: "Nagasaki", nome: "Pit Bike", preco: 20000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_015251583.png", categoria: "motas", tipo: "unlimited" },
+{ marca: "Nagasaki", nome: "Shinobi", preco: 150000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/ad/Shinobi-GTAOe-front.png", categoria: "motas" },
+{ marca: "Nagasaki", nome: "Shotaro", preco: 220000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/df/Shotaro-GTAO-front.png", categoria: "motas" },
+{ marca: "Nagasaki", nome: "Stryder", preco: 22300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/3b/Stryder-GTAO-front.png", categoria: "motas" },
+
+{ marca: "Obey", nome: "10F", preco: 365000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/58/10F-GTAOe-front.png", categoria: "desportivos" },
+{ marca: "Obey", nome: "10F LBW ", preco: 666667, imagem: "https://gtacars.net/images/e2ddb5a37531af5af36ecf58c8ba78d2", categoria: "desportivos" },
+{ marca: "Obey", nome: "8F D-Street", preco: 900000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b8/8FDrafter-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Obey", nome: "8F Drafter", preco: 136900, imagem: "https://img.gta5-mods.com/q95/images/obey-8f-d-street-widebody-version-add-on/25417e-r.png", categoria: "desportivos" },
+{ marca: "Obey", nome: "9F", preco: 153200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/2d/9F-GTAV-front.png-width-down/268?cb=20150529201705", categoria: "desportivos" },
+{ marca: "Obey", nome: "9F Cabrio", preco: 155200, imagem: "https://static.wikia.nocookie.net/gta/images/a/a1/9FCabrio-GTAV-front.png&path-prefix=pt", categoria: "desportivos" },
+{ marca: "Obey", nome: "Argento", preco: 160000, imagem: "https://img.gta5-mods.com/q85-w800/images/obey-argento-add-on-sounds-lods/152cdf-1.png", categoria: "desportivos" },
+{ marca: "Obey", nome: "Argento 2015", preco: 800000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_015428318.png", categoria: "desportivos", tipo: "unlimited" },
+{ marca: "Obey", nome: "I-Wagen", preco: 55000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/be/IWagen-GTAOe-front.png", categoria: "suv" },
+{ marca: "Obey", nome: "Omnis", preco: 40700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e7/Omnis-GTAO-front.png", categoria: "desportivos", vd: 230, vf: 245, kg: 60 },
+{ marca: "Obey", nome: "Omnis E-GT", preco: 232000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/40/OmnisEGT-GTAOe-front.png", categoria: "desportivos" },
+{ marca: "Obey", nome: "Rocoto", preco: 14900, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/38/Rocoto-GTAVe-front.png", categoria: "suv" },
+{ marca: "Obey", nome: "Tailgater", preco: 45000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e1/Tailgater-GTAV-front.png", categoria: "desportivos", vd: 210, vf: 225, kg: 100 },
+{ marca: "Obey", nome: "Tailgater S", preco: 45000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/83/TailgaterS-GTAO-front.png", categoria: "desportivos", vd: 195, vf: 210, kg: 100 },
+
+{ marca: "Ocelot", nome: "Ardente", preco: 200000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/80/Ardent-GTAO-front.png", categoria: "classicos" },
+{ marca: "Ocelot", nome: "Ardent Turbo", preco: 210000, imagem: "https://img.gta5-mods.com/q85-w800/images/ocelot-ardent-turbo-add-on/0148e2-0.png", categoria: "classicos" },
+{ marca: "Ocelot", nome: "Euphoria", preco: 76000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_022009834.png", categoria: "classicos" },
+{ marca: "Ocelot", nome: "F620", preco: 24500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f8/F620-GTAV-front.png", categoria: "comuns" },
+{ marca: "Ocelot", nome: "Jackal", preco: 37800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/48/Jackal-GTAV-front.png", categoria: "comuns" },
+{ marca: "Ocelot", nome: "Jugular", preco: 290000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/98/Jugular-GTAO-front.png-width-down/268?cb=20190723230439", categoria: "desportivos" },
+{ marca: "Ocelot", nome: "Locust", preco: 185000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8c/Locust-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Ocelot", nome: "Lynx", preco: 145250, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/a7/Lynx-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Ocelot", nome: "Pariah", preco: 262000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/ff/Pariah-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Ocelot", nome: "Penetrator", preco: 202500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/9c/Penetrator-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Ocelot", nome: "Swinger", preco: 297000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f8/Swinger-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Ocelot", nome: "Virtue", preco: 225000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/91/Virtue-GTAOe-front.png", categoria: "eletricos" },
+{ marca: "Ocelot", nome: "XA-21", preco: 450000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/69/XA21-GTAO-front.png", categoria: "desportivos" },
+
+{ marca: "Pegassi", nome: "Aviador LP 700 K.S.E. ", preco: 700000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_163804250.png", categoria: "desportivos" },
+{ marca: "Pegassi", nome: "Bati 801", preco: 45000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d9/Bati801-GTAV-front.png-width-down/268?cb=20160127211358", categoria: "motas" },
+{ marca: "Pegassi", nome: "Bati 801 RR", preco: 57500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e3/Bati801RR-GTAV-front-Sprunk.png", categoria: "motas" },
+{ marca: "Pegassi", nome: "Esskey", preco: 18900, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/4e/Esskey-GTAO-front.png", categoria: "motas" },
+{ marca: "Pegassi", nome: "FCR1000", preco: 26300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/95/FCR1000-GTAO-front.png", categoria: "motas" },
+{ marca: "Pegassi", nome: "FCR1000 Custom", preco: 40000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/87/FCR1000Custom-GTAO-front.png", categoria: "motas" },
+{ marca: "Pegassi", nome: "Faggio", preco: 700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/91/Faggio-GTAV-front.png", categoria: "motas", tipo: "unlimited" },
+{ marca: "Pegassi", nome: "Faggio Mod", preco: 1000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/07/FaggioMod-GTAO-front.png", categoria: "motas", tipo: "unlimited" },
+{ marca: "Pegassi", nome: "Faggio Sport", preco: 850, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/50/FaggioSport-GTAO-front.png", categoria: "motas", tipo: "unlimited" },
+{ marca: "Pegassi", nome: "IE ", preco: 1500000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_164446941.png", categoria: "supercarros" },
+{ marca: "Pegassi", nome: "Ignus", preco: 750000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/69/Ignus-GTAOe-front.png", categoria: "desportivos" },
+{ marca: "Pegassi", nome: "Infernus", preco: 905900, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/0e/Infernus-GTAV-front.png", categoria: "desportivos" },
+{ marca: "Pegassi", nome: "Infernus Classic", preco: 200000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/73/InfernusClassic-GTAO-front.png", categoria: "classicos" },
+{ marca: "Pegassi", nome: "Ingot", preco: 23000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/62/Ingot-GTAV-front.png", categoria: "comuns" },
+{ marca: "Pegassi", nome: "Monroe", preco: 46300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/44/Monroe-GTAV-front.png", categoria: "classicos" },
+{ marca: "Pegassi", nome: "Osiris", preco: 370000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/53/Osiris-GTAV-front.png", categoria: "desportivos" },
+{ marca: "Pegassi", nome: "Reaper", preco: 320000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b7/Reaper-GTAOe-front.png", categoria: "desportivos" },
+{ marca: "Pegassi", nome: "Reaper Custom", preco: 680000, imagem: "https://img.gta5-mods.com/q95/images/pegassi-reaper-custom-add-on-widebody/809911-2021-07-10_24_compress6.jpg", categoria: "desportivos" },
+{ marca: "Pegassi", nome: "Ruffian", preco: 22000, imagem: "https://www.gtabase.com/images/jch-optimize/ng/images_gta-5_vehicles_motorcycles_main_ruffian.webp", categoria: "motas" },
+{ marca: "Pegassi", nome: "Tempesta", preco: 330000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/35/Tempesta-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Pegassi", nome: "Tezeract", preco: 800000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/ca/Tezeract-GTAO-front.png", categoria: "eletricos" },
+{ marca: "Pegassi", nome: "Torero", preco: 215000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/47/Torero-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Pegassi", nome: "Toros", preco: 187000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d3/Toros-GTAO-front.png", categoria: "suv" },
+{ marca: "Pegassi", nome: "Vacca", preco: 1232000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b4/Vacca-GTAV-front.png", categoria: "supercarros" },
+{ marca: "Pegassi", nome: "Vortex", preco: 86000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/71/Vortex-GTAO-front.png", categoria: "motas" },
+{ marca: "Pegassi", nome: "Zentorno", preco: 350000, imagem: "https://static.wikia.nocookie.net/gta/images/6/60/Zentorno-GTAV-front.png&path-prefix=pt", categoria: "desportivos"},
+{ marca: "Pegassi", nome: "Zorrusso", preco: 600000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/ae/Zorrusso-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Pegassi", nome: "Zwave JC ", preco: 850000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_165628184.png", categoria: "desportivos" },
+
+{ marca: "Pfister", nome: "811", preco: 290000, imagem: "https://static.wikia.nocookie.net/gta/images/c/c7/811A-GTAO-front.png&path-prefix=pt", categoria: "desportivos" },
+{ marca: "Pfister", nome: "Astron", preco: 36700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/3e/Astron-GTAOe-front.png", categoria: "suv", vd: 180, vf: 200, kg: 120 },
+{ marca: "Pfister", nome: "Callista", preco: 200000, imagem: "https://img.gta5-mods.com/q85-w800/images/pfister-comet-callista-add-on-tuning-liveries-sounds/83f848-0-min.png", categoria: "classicos" },	
+{ marca: "Pfister", nome: "Comet", preco: 172200, imagem: "https://static.wikia.nocookie.net/gta/images/d/d2/Comet-GTAV-front.png&path-prefix=pt", categoria: "desportivos" },
+{ marca: "Pfister", nome: "Comet Retro Custom", preco: 205500, imagem: "https://static.wikia.nocookie.net/gta/images/d/d2/Comet-GTAV-front.png&path-prefix=pt", categoria: "desportivos" },
+{ marca: "Pfister", nome: "Comet S2", preco: 550000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/c4/CometS2-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Pfister", nome: "Comet SR", preco: 287000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/0f/CometSR-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Pfister", nome: "Comet Safari", preco: 132000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/aa/CometSafari-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Pfister", nome: "Galaxy ", preco: 380000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_171205274.png", categoria: "desportivos" },
+{ marca: "Pfister", nome: "Growler", preco: 175000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/78/Growler-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Pfister", nome: "Neon", preco: 132000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/c0/Neon-GTAO-front.png", categoria: "eletricos" },
+
+{ marca: "Principe", nome: "Deveste Eight", preco: 720000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/7b/Deveste-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Principe", nome: "Diablous", preco: 47000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/47/Diabolus-GTAO-front.png", categoria: "motas" },
+{ marca: "Principe", nome: "Diabolus Custom", preco: 70000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/11/DiabolusCustom-GTAO-front.png", categoria: "motas" },
+{ marca: "Principe", nome: "Lectro", preco: 27500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/de/Lectro-GTAO-front.png", categoria: "motas" },
+{ marca: "Principe", nome: "Nemesis", preco: 30000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/4b/Nemesis-GTAV-front.png", categoria: "motas" },
+
+{ marca: "Progen", nome: "Emerus", preco: 1700000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/3f/Emerus-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Progen", nome: "GP1", preco: 310000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8a/GP1-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Progen", nome: "Itali GTB", preco: 237000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/44/ItaliGTB-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Progen", nome: "Itali GTB Custom", preco: 330000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/44/ItaliGTB-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Progen", nome: "T20", preco: 565000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/c0/T20-GTAVe-front.png", categoria: "desportivos" },
+{ marca: "Progen", nome: "Tyrus", preco: 310000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8f/Tyrus-GTAO-front.png", categoria: "desportivos" },
+
+{ marca: "R", nome: "Rat-Loader", preco: 5000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/cd/Rat-Loader-GTAV-front.png", categoria: "outros" },
+{ marca: "R", nome: "Rat-Truck", preco: 8000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/7a/Rat-Truck-GTAV-front.png", categoria: "comuns" },
+
+{ marca: "Revolter", nome: "Revolter", preco: 262600, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e8/Revolter-GTAO-front.png", categoria: "desportivos" },
+
+{ marca: "Rune", nome: "Cheburek", preco: 14000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8e/Cheburek-GTAO-front.png", categoria: "classicos" },
+
+{ marca: "Schyster", nome: "Deviant", preco: 65000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_174003962.png", categoria: "classicos" },
+{ marca: "Schyster", nome: "Fusilade", preco: 81550, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_174115451.png", categoria: "comuns" },
+
+{ marca: "Shitzu", nome: "Castella", preco: 38000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_174210269.png", categoria: "comuns" },
+{ marca: "Shitzu", nome: "Defiler", preco: 90000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f5/Defiler-GTAO-front.png", categoria: "motas" },
+{ marca: "Shitzu", nome: "Hakuchou", preco: 45800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/ab/Hakuchou-GTAV-front.png", categoria: "motas" },
+{ marca: "Shitzu", nome: "Hakuchou Drag", preco: 120000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/fd/HakuchouDrag-GTAO-front.png", categoria: "motas" },
+{ marca: "Shitzu", nome: "PC-J-600", preco: 21700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/74/PCJ600-GTAV-front.png", categoria: "motas" },
+{ marca: "Shitzu", nome: "Vader", preco: 15400, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/9b/Vader-GTAV-front.png", categoria: "motas" },
+
+{ marca: "Sprunk", nome: "Buffalo", preco: 275000, imagem: "https://www.gtabase.com/images/jch-optimize/ng/images_gta-5_vehicles_sports_main_buffalo.webp", categoria: "comuns" },
+
+{ marca: "Stanley", nome: "Fieldmaster Classic", preco: 10200, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_174632022.png", categoria: "outros" },
+{ marca: "Stanley", nome: "Jack Remower", preco: 12000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_174702295.png", categoria: "outros" },
+
+{ marca: "Toundra", nome: "Panthere", preco: 165000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/69/Panthere-GTAOe-front.png", categoria: "desportivos" },
+
+{ marca: "Tow", nome: "Truck ", preco: 85000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-29_174736619.png", categoria: "outros" },
+
+{ marca: "Truffade", nome: "Adder", preco: 241000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/9e/Adder-GTAV-front.png", categoria: "desportivos" },
+{ marca: "Truffade", nome: "Adder Sport", preco: 255000, imagem: "https://img.gta5-mods.com/q95/images/truffade-adder-sport-add-on/37263a-GTA5_2018_05_28_12_37_46_127%20(1).jpg", categoria: "desportivos" },
+{ marca: "Truffade", nome: "Nero", preco: 750000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/5e/Nero-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Truffade", nome: "Nero costum", preco: 760000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/5e/Nero-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Truffade", nome: "Thrax", preco: 840000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/55/Thrax-GTAO-front.png-width-down/268?cb=20190723230233", categoria: "desportivos" },
+{ marca: "Truffade", nome: "Type-1", preco: 125000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-25_022434234.png", categoria: "outros" },
+{ marca: "Truffade", nome: "Z-Type", preco: 130000, imagem: "https://static.wikia.nocookie.net/gta/images/9/9d/Z-Type-GTAV-front.png&path-prefix=pt", categoria: "classicos" },
+
+{ marca: "Vapid", nome: "Aleutian", preco: 26500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/af/Aleutian-GTAOe-front.png", categoria: "suv" },
+{ marca: "Vapid", nome: "Bensom", preco: 15000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e8/Benson-GTAV-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 350 },
+{ marca: "Vapid", nome: "Blade", preco: 14100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f3/Blade-GTAV-front.png", categoria: "classicos" },
+{ marca: "Vapid", nome: "Bobcat XL Open", preco: 12500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/37/BobcatXL-GTAV-front.png", categoria: "suv" },
+{ marca: "Vapid", nome: "Bullet", preco: 132400, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/39/Bullet-GTAVe-front.png", categoria: "comuns" },
+{ marca: "Vapid", nome: "Caracara2021", preco: 85000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_215032601.png", categoria: "suv" },
+{ marca: "Vapid", nome: "Caracara 4x4", preco: 58500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/a4/Caracara4x4-GTAO-front.png", categoria: "offroads" },
+{ marca: "Vapid", nome: "Chino", preco: 7700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/17/Chino-GTAV-front.png", categoria: "classicos" },
+{ marca: "Vapid", nome: "Chino Custom", preco: 18450, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/3f/ChinoCustom-GTAO-front.png", categoria: "classicos" },
+{ marca: "Vapid", nome: "Clique", preco: 20700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/c6/Clique-GTAO-front.png-width-down/268?cb=20181214181626", categoria: "classicos" },
+{ marca: "Vapid", nome: "Clown Van", preco: 5700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/0d/ClownVan-GTAV-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+{ marca: "Vapid", nome: "Cognoscenti Luxe", preco: 3500, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_215149042.png", categoria: "suv", tipo: "unlimited" },
+{ marca: "Vapid", nome: "Contender", preco: 54500, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_215155042.png", categoria: "offroads" },
+{ marca: "Vapid", nome: "Contender S", preco: 35000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_215158836.png", categoria: "suv" },
+{ marca: "Vapid", nome: "Contender T", preco: 58000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_215203662.png", categoria: "suv" },
+{ marca: "Vapid", nome: "Coyote Off-Road", preco: 37500, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_215208746.png", categoria: "offroads" },
+{ marca: "Vapid", nome: "Dominator", preco: 115100, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/78/Dominator-GTAV-front.png", categoria: "desportivos" },
+{ marca: "Vapid", nome: "Dominator ASP", preco: 128000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/75/DominatorASP-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Vapid", nome: "Dominator Classic", preco: 98200, imagem: "https://img.gta5-mods.com/q85-w800/images/vapid-dominator-classic/49881b-0.jpg", categoria: "classicos" },
+{ marca: "Vapid", nome: "Dominator GT2019", preco: 90000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_215232108.png", categoria: "desportivos", tipo: "unlimited" },
+{ marca: "Vapid", nome: "Dominator GTT", preco: 52900, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e0/DominatorGTT-GTAO-front.png", categoria: "classicos" },
+{ marca: "Vapid", nome: "Dominator GTX", preco: 160000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8b/DominatorGTX-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Vapid", nome: "Ellie", preco: 97000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/6b/Ellie-GTAO-front.png", categoria: "classicos" },
+{ marca: "Vapid", nome: "FMJ", preco: 350000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8c/FMJ-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Vapid", nome: "Flash GT", preco: 121200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/3b/FlashGT-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Vapid", nome: "GB200", preco: 115500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/36/GB200-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Vapid", nome: "Guardian", preco: 65000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/57/Guardian-GTAO-front.png", categoria: "offroads" },
+{ marca: "Vapid", nome: "Hitknife", preco: 58000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/07/Hotknife-GTAV-front.png-width-down/268?cb=20170530185811", categoria: "classicos" },
+{ marca: "Vapid", nome: "Hustler", preco: 20000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f1/Hustler-GTAO-front.png", categoria: "classicos" },
+{ marca: "Vapid", nome: "Lost Slamvan", preco: 11000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/61/LostSlamvan2-GTAO-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 60 },
+{ marca: "Vapid", nome: "Minivan", preco: 5000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/16/Minivan-GTAV-front.png", categoria: "carrinhas", tipo: "unlimited", vd: 0, vf: 0, kg: 250 },
+{ marca: "Vapid", nome: "Minivan Custom", preco: 10500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/ff/MinivanCustom-GTAO-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+{ marca: "Vapid", nome: "New Yankee", preco: 34600, imagem: "https://img.gta5-mods.com/q85-w800/images/vapid-new-yankee-add-on-replace/be5f65-20171027214719_1.jpg", categoria: "carrinhas", vd: 0, vf: 0, kg: 60 },
+{ marca: "Vapid", nome: "Old Yankee", preco: 32600, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_215345199.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 60 },
+{ marca: "Vapid", nome: "Peyote", preco: 9500, imagem: "https://www.gtabase.com/images/jch-optimize/ng/images_gta-5_vehicles_sports-classic_main_peyote.webp", categoria: "classicos" },
+{ marca: "Vapid", nome: "Peyote Custom", preco: 19000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/ec/PeyoteCustom-GTAO-front.png", categoria: "classico" },
+{ marca: "Vapid", nome: "Peyote Gasser", preco: 27000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/6b/PeyoteGasser-GTAO-front.png", categoria: "classicos" },
+{ marca: "Vapid", nome: "Radius", preco: 6850, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b6/Radius-GTAV-front.png", categoria: "comuns" },
+{ marca: "Vapid", nome: "Ratel", preco: 33400, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/0f/Ratel-GTAOe-front.png", categoria: "buggys" },
+{ marca: "Vapid", nome: "Retinue", preco: 23200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b8/Retinue-GTAO-front.png", categoria: "classicos" },
+{ marca: "Vapid", nome: "Retinue Mk2", preco: 40000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d5/RetinueMkII-GTAO-front.png-width-down/268?cb=20191213212800", categoria: "classicos" },
+{ marca: "Vapid", nome: "Riata", preco: 45000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/67/Riata-GTAO-front.png", categoria: "offroads", },
+{ marca: "Vapid", nome: "Sabot", preco: 234000, imagem: "https://static.wikia.nocookie.net/gtafanon/images/5/50/Vapid_Sabot.png", categoria: "desportivos" },
+{ marca: "Vapid", nome: "Sadler", preco: 11000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/07/Sadler-GTAV-front.png", categoria: "suv", },
+{ marca: "Vapid", nome: "Sandking SWB", preco: 54500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e2/SandkingSWB-GTAVe-front.png", categoria: "offroads" },
+{ marca: "Vapid", nome: "Sandking XL", preco: 46000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f0/SandkingXL-GTAVe-front.png", categoria: "offroads" },
+{ marca: "Vapid", nome: "Scout", preco: 114500, imagem: "https://img.gta5-mods.com/q85-w800/images/vapid-scout-add-on-replace/543584-20190116192715_1.jpg", categoria: "suv" },
+{ marca: "Vapid", nome: "Slam Van", preco: 17000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/cb/Slamvan-GTAV-front.png", categoria: "classicos", tipo: "unlimited", vd: 0, vf: 0, kg: 60 },
+{ marca: "Vapid", nome: "Slam Van Custom", preco: 19600, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/96/SlamvanCustom-GTAO-front.png", categoria: "classicos", vd: 0, vf: 0, kg: 60 },
+{ marca: "Vapid", nome: "Speedo", preco: 9000, imagem: "https://img.gta5-mods.com/q85-w800/images/vapid-speedo-express-add-on-liveries/2f6577-1_resized.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+{ marca: "Vapid", nome: "Speedo Express ", preco: 1000000, imagem: "https://img.gta5-mods.com/q95/images/vapid-speedo-express-add-on-liveries/69c924-EVE-20200210163017.052.jpg", categoria: "carrinhas", vd: 0, vf: 0, kg: 700 },
+{ marca: "Vapid", nome: "Stanier", preco: 10300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/89/Stanier-GTAVe-front.png", categoria: "classicos", tipo: "unlimited" },
+{ marca: "Vapid", nome: "Stanier Off-Road", preco: 27600, imagem: "https://img.gta5-mods.com/q95/images/vapid-stanier-off-road-add-on-replace-tuning-liveries/638ab8-20180210011629_1.jpg", categoria: "offroads" },
+{ marca: "Vapid", nome: "Steed1500", preco: 11000, imagem: "https://img.gta5-mods.com/q85-w800/images/vapid-steed-1500-add-on-liveries/739938-STEED-VAN-A-discordfriendly.jpg", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+{ marca: "Vapid", nome: "Steed and Yankee", preco: 27000, imagem: "https://img.gta5-mods.com/q85-w800/images/vapid-steed-and-yankee-improvements-add-on-liveries/29e331-1.jpg", categoria: "carrinhas", vd: 0, vf: 0, kg: 60 },
+{ marca: "Vapid", nome: "The Liberator", preco: 130000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e0/Liberator-GTAV-front.png", categoria: "outros" },
+{ marca: "Vapid", nome: "Vigero ZX Convertible", preco: 135500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/08/VigeroZXConvertible-GTAOe-front-RoofDown.png", categoria: "desportivos" },
+{ marca: "Vapid", nome: "Winky", preco: 21300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/59/Winky-GTAO-front.png-width-down/268?cb=20201216100324", categoria: "offroads" },
+
+{ marca: "Vulcar", nome: "Fagaloa", preco: 5200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/14/Fagaloa-GTAO-front.png", categoria: "classicos" },
+{ marca: "Vulcar", nome: "Hachura R", preco: 184000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-25_022733103.png", categoria: "desportivos" },
+{ marca: "Vulcar", nome: "Nebula trubo", preco: 20000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/73/NebulaTurbo-GTAO-front.png", categoria: "classicos" },
+{ marca: "Vulcar", nome: "Nebula Wagon", preco: 32000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/95/Nebula-GTASA-front.jpg-width-down/268?cb=20240107214442", categoria: "classicos" },
+{ marca: "Vulcar", nome: "Warrener", preco: 11000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/3c/Warrener-GTAV-front.png", categoria: "classicos" },
+{ marca: "Vulcar", nome: "Warrener HKR", preco: 30000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f0/WarrenerHKR-GTAO-front.png", categoria: "classicos" },
+
+{ marca: "Vysser", nome: "Neo", preco: 700000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/01/Neo-GTAO-front.png", categoria: "desportivos" },
+
+{ marca: "WMC", nome: "Bagger", preco: 10300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/10/Bagger-GTAV-front.png", categoria: "motas" },
+{ marca: "WMC", nome: "Daemon", preco: 10200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f7/Daemon-GTAV-front.png", categoria: "motas" },
+{ marca: "WMC", nome: "Deamon the lost edition", preco: 9200, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-25_031357195.png", categoria: "motas" },
+{ marca: "WMC", nome: "Nightblade", preco: 42500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/6/6b/Nightblade-GTAO-front.png", categoria: "motas" },
+{ marca: "WMC", nome: "Sovereign", preco: 14300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/98/Sovereign-GTAV-front.png", categoria: "motas" },
+
+{ marca: "Weeny", nome: "Dynasty", preco: 4000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/1/1d/Dynasty-GTAO-front.png", categoria: "classicos" },
+{ marca: "Weeny", nome: "Issi", preco: 18600, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/7d/IssiUp-GTAV-front.png", categoria: "comuns" },
+{ marca: "Weeny", nome: "Issi Rally", preco: 40000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/5/5f/IssiRally-GTAOe-front.png-width-down/268?cb=20221220172558", categoria: "desportivos", vd: 185, vf: 200, kg: 120 },
+{ marca: "Weeny", nome: "Issi Sport", preco: 175000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/9/91/IssiSport-GTAO-front.png-width-down/268?cb=20190723230441", categoria: "desportivos" },
+{ marca: "Weeny", nome: "Issi hycade supervip", preco: 175000, imagem: "https://dunb17ur4ymx4.cloudfront.net/packages/images/e6f5eee04d46240bc3a5748092bd348667ef2dc6.png", categoria: "desportivos" },
+
+{ marca: "Western", nome: "Cliffhanger", preco: 24800, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/78/Cliffhanger-GTAO-front.png", categoria: "motas" },
+{ marca: "Western", nome: "Gargoyle", preco: 28400, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/ea/Gargoyle-GTAO-front.png", categoria: "motas" },
+{ marca: "Western", nome: "Golem", preco: 27000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_221734197.png", categoria: "motas" },
+{ marca: "Western", nome: "LCC krust", preco: 40000, imagem: "https://img.gta5-mods.com/q85-w800/images/lcc-krust-add-on-fivem/eed2cb-lcckrust.PNG", categoria: "motas" },
+{ marca: "Western", nome: "LCC stockholm", preco: 27000, imagem: "https://img.gta5-mods.com/q95/images/lcc-stockholm-addon-fivem-template/34fb49-s3.png", categoria: "motas" },
+{ marca: "Western", nome: "LCC T-Rod", preco: 35000, imagem: "https://img.gta5-mods.com/q95/images/lcc-t-rod-add-on-fivem/95c882-T-rod.PNG", categoria: "motas" },
+{ marca: "Western", nome: "LCC verin", preco: 26900, imagem: "https://img.gta5-mods.com/q95/images/lcc-verin-add-on/ed8a6b-EVE-20190613234255.163.jpg", categoria: "motas" },
+{ marca: "Western", nome: "Nightblade classic", preco: 67000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_221812391.png", categoria: "motas" },
+{ marca: "Western", nome: "Powersurge", preco: 75000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/20/Powersurge-GTAOe-front.png", categoria: "motas" },
+{ marca: "Western", nome: "Rat bike", preco: 5000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/b/b5/RatBike-GTAO-front.png", categoria: "motas" },
+{ marca: "Western", nome: "Reever", preco: 120000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/af/Reever-GTAOe-front.png", categoria: "motas" },
+{ marca: "Western", nome: "Slasher", preco: 32600, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-28_221836062.png", categoria: "motas" },
+{ marca: "Western", nome: "Spirit chopper", preco: 34200, imagem: "https://img.gta5-mods.com/q85-w800/images/western-spirit-chopper-add-on-1-0/575f65-20180413115645_1.jpg", categoria: "motas" },
+{ marca: "Western", nome: "Wintergreen", preco: 28200, imagem: "https://img.gta5-mods.com/q95/images/wmc-wintergreen-sovereign-improvements-pack/e382fb-4.jpg", categoria: "motas" },
+{ marca: "Western", nome: "Wolfsbane", preco: 13700, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/ff/Wolfsbane-GTAO-front.png", categoria: "motas" },
+{ marca: "Western", nome: "Zombie bobber", preco: 17300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/af/ZombieBobber-GTAO-front.png", categoria: "motas" },
+{ marca: "Western", nome: "Zombie chopper", preco: 19300, imagem: "https://static.wikia.nocookie.net/gtawiki/images/7/70/ZombieChopper-GTAO-front.png", categoria: "motas" },
+
+{ marca: "Willard", nome: "Faction", preco: 15200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/0/07/Faction-GTAO-front.png", categoria: "classicos" },
+{ marca: "Willard", nome: "Faction custom", preco: 17500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f0/FactionCustom-GTAO-front.png", categoria: "classicos" },
+{ marca: "Willard", nome: "Faction dunk", preco: 11000, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-25_024748944.png", categoria: "offroads" },
+
+{ marca: "Zircoflow", nome: "Stratum C", preco: 425000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/38/Stratum-GTAV-front.png", categoria: "desportivos" },
+
+{ marca: "Zirconium", nome: "Hades", preco: 20300, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-25_024707440.png", categoria: "comuns" },
+{ marca: "Zirconium", nome: "Journey", preco: 5000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/8/8d/Journey-GTAV-front.png", categoria: "carrinhas", vd: 0, vf: 0, kg: 250 },
+{ marca: "Zirconium", nome: "Stratum", preco: 12200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/38/Stratum-GTAV-front.png", categoria: "comuns" },
+{ marca: "Zirconium", nome: "Stratum coupe", preco: 18500, imagem: "https://r2.fivemanage.com/EgbK3uAFz5B8e7s06gZAE/image/image_2025-03-25_024721497.png", categoria: "comuns" },
+
+{ marca: "Överflöd", nome: "Entity XF", preco: 1500000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d2/EntityXF-GTAVe-front.png", categoria: "supercarros" },
+{ marca: "Överflöd", nome: "Imorgon", preco: 1400000, imagem: "https://static.wikia.nocookie.net/gta/images/4/43/Imorgon-GTAO-front.png-width-down/1000?cb=20200507014738&path-prefix=pt", categoria: "supercarros" },
+{ marca: "Överflöd", nome: "Zeno", preco: 690000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/a9/Zeno-GTAOe-front.png", categoria: "desportivos" },
+
+{ marca: "Übermacht", nome: "Autarch", preco: 520000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/4/4d/Autarch-GTAOe-FrontQuarter.png", categoria: "desportivos" },
+{ marca: "Übermacht", nome: "Cypher", preco: 128600, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f5/Cypher-GTAOe-FrontQuarter.png", categoria: "desportivos" },
+{ marca: "Übermacht", nome: "Oracle", preco: 15500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/f/f6/Oracle-GTAVe-front.png", categoria: "comuns" },
+{ marca: "Übermacht", nome: "Oracle XS", preco: 27500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/2/22/OracleXS-GTAV-front.png", categoria: "comuns" },
+{ marca: "Übermacht", nome: "Rebla GTS", preco: 132000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/a6/ReblaGTS-GTAO-front.png", categoria: "suv" },
+{ marca: "Übermacht", nome: "Rhinehart", preco: 135000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e1/Rhinehart-GTAOe-front.png", categoria: "desportivos" },
+{ marca: "Übermacht", nome: "Rhinehart sedan ", preco: 480000, imagem: "https://www.polyfex.co.uk/cdn/shop/files/Grand_Theft_Auto_V_9_5_2024_2_01_42_AM.webp?v=1725569181&width=493", categoria: "desportivos", tipo: "unlimited" },
+{ marca: "Übermacht", nome: "SC1", preco: 220000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/3/3a/SC1-GTAO-front.png", categoria: "desportivos" },
+{ marca: "Übermacht", nome: "STD Track 2022", preco: 350000, imagem: "https://static.wikia.nocookie.net/nopixel/images/4/45/PremiumDeluxeMotorsport-GTAV-PDMSign.PNG.png", categoria: "desportivos" },
+{ marca: "Übermacht", nome: "Sentinel", preco: 69200, imagem: "https://static.wikia.nocookie.net/gtawiki/images/a/ab/Sentinel-GTAV-front.png", categoria: "desportivos", vd: 180, vf: 200, kg: 60 },
+{ marca: "Übermacht", nome: "Sentinel classic", preco: 125500, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/dc/SentinelClassic-GTAO-front.png", categoria: "classicos" },
+{ marca: "Übermacht", nome: "Sentinel classic Widebody", preco: 157000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/dc/SentinelClassic-GTAO-front.png", categoria: "classicos" },
+{ marca: "Übermacht", nome: "Sentinel SG4", preco: 210000, categoria: "desportivos", imagem: "https://img.gta5-mods.com/q85-w800/images/ubermacht-sentinel-sg4-add-on-liveries/db5680-0.png" },
+{ marca: "Übermacht", nome: "Sentinel XS", preco: 71400, imagem: "https://static.wikia.nocookie.net/gtawiki/images/d/d0/SentinelXS-GTAV-front.png", categoria: "desportivos", vd: 175, vf: 190, kg: 60 },
+{ marca: "Übermacht", nome: "Seraph", preco: 40000, imagem: "https://img.gta5-mods.com/q85-w800/images/ubermacht-seraph-add-on-replace/a18a9a-271590_20200316192639_1.jpg", categoria: "classicos", stock: "unlimited" },
+{ marca: "Übermacht", nome: "Zion", preco: 52500, imagem: "https://static.wikia.nocookie.net/gta/images/c/cc/Zion-GTAV-front.png&path-prefix=pt", categoria: "comuns" },
+{ marca: "Übermacht", nome: "Zion cabrio", preco: 54000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/c/cb/ZionCabrioDown-GTAV-front.png", categoria: "comuns" },
+{ marca: "Übermacht", nome: "Zion classic", preco: 30000, imagem: "https://static.wikia.nocookie.net/gtawiki/images/e/e7/ZionClassic-GTAO-front.png", categoria: "classicos" },
+    ];
+
+    function mostrarCarros(lista) {
+      const container = document.getElementById("lista-carros");
+      container.innerHTML = "";
+      lista.forEach(carro => {
+        const div = document.createElement("div");
+        div.className = "carro";
+        div.innerHTML = `
+          <img src="${carro.imagem}" alt="${carro.nome}" loading="lazy">
+          <h2>${carro.nome}</h2>
+          <p><strong>Marca:</strong> ${carro.marca}</p>
+          <p><strong>Preço:</strong> $${carro.preco.toLocaleString()}</p>
+          <p><strong>Categoria:</strong> ${carro.categoria}</p>
+<p><strong>VD:</strong> ${carro.vd || 'N/A'} km/h</p>
+  <p><strong>VF:</strong> ${carro.vf || 'N/A'} km/h</p>
+  <p><strong>KG:</strong> ${carro.kg || 'N/A'} kg</p>
+          ${carro.stock === "Out of stock" ? '<span class="badge">Fora de stock</span>' : ''}
+          ${carro.tipo === "unlimited" ? '' : ''}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function filtrarCarros() {
+      const termo = document.getElementById("pesquisa").value.toLowerCase();
+      const ordem = document.getElementById("ordem").value;
+      const categoriaSelecionada = document.getElementById("categoria").value;
+      const precoSelecionado = document.getElementById("preco").value;
+      const stockFiltro = document.getElementById("stock").value;
+      const tipoSelecionado = document.getElementById("unlimited").value;
+
+      let filtrado = carros.filter(carro => {
+        let incluiPesquisa = carro.nome.toLowerCase().includes(termo) || carro.marca.toLowerCase().includes(termo);
+        let incluiCategoria = categoriaSelecionada === "todas" || carro.categoria === categoriaSelecionada;
+        let incluiPreco = true;
+
+        if (precoSelecionado !== "todas") {
+          const [min, max] = precoSelecionado.split("-").map(Number);
+          incluiPreco = carro.preco >= min && carro.preco <= max;
+        }
+
+        let incluiStock = true;
+        if (stockFiltro === "emStock") {
+          incluiStock = !carro.stock;
+        } else if (stockFiltro === "semStock") {
+          incluiStock = carro.stock === "Out of stock";
+        }
+
+        let incluiTipo = true;
+        if (tipoSelecionado === "unlimited") {
+          incluiTipo = carro.tipo === "unlimited";
+        } else if (tipoSelecionado === "normal") {
+          incluiTipo = carro.tipo !== "unlimited";
+        }
+
+        return incluiPesquisa && incluiCategoria && incluiPreco && incluiStock && incluiTipo;
+      });
+
+      switch (ordem) {
+  case "preco-asc":
+    filtrado.sort((a, b) => a.preco - b.preco);
+    break;
+  case "preco-desc":
+    filtrado.sort((a, b) => b.preco - a.preco);
+    break;
+  case "marca-asc":
+    filtrado.sort((a, b) => a.marca.localeCompare(b.marca));
+    break;
+  case "marca-desc":
+    filtrado.sort((a, b) => b.marca.localeCompare(a.marca));
+    break;
+  case "nome-asc":
+    filtrado.sort((a, b) => a.nome.localeCompare(b.nome));
+    break;
+  case "nome-desc":
+    filtrado.sort((a, b) => b.nome.localeCompare(a.nome));
+    break;
+	case "vd-asc":
+      filtrado.sort((a, b) => a.vs - b.vs);
+      break;
+    case "vd-desc":
+      filtrado.sort((a, b) => b.vs - a.vs);
+      break;
+	case "vf-asc":
+      filtrado.sort((a, b) => a.vft - b.vft);
+      break;
+    case "vf-desc":
+      filtrado.sort((a, b) => b.vft - a.vft);
+      break;
+	case "kg-asc":
+      filtrado.sort((a, b) => a.kg - b.kg);
+      break;
+    case "kg-desc":
+      filtrado.sort((a, b) => b.kg - a.kg);
+      break;
+
+}
+
+      mostrarCarros(filtrado);
+    }
+
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle("dark-mode");
+      localStorage.setItem("tema", isDark ? "escuro" : "claro");
+    }
+
+    window.onload = () => {
+      const tema = localStorage.getItem("tema");
+      if (tema === "escuro") document.body.classList.add("dark-mode");
+      filtrarCarros();
+    }
+  </script>
+</body>
+</html>
